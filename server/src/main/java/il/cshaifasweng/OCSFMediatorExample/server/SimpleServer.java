@@ -6,14 +6,16 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class SimpleServer extends AbstractServer {
 	private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
 
 	public SimpleServer(int port) {
 		super(port);
-		
+
 	}
 
 	@Override
@@ -48,30 +50,46 @@ public class SimpleServer extends AbstractServer {
 				client.sendToClient(message);
 			}
 			else if(request.startsWith("send Submitters IDs")){
-				//add code here to send submitters IDs to client
+				message.setMessage("211829494, 206924888, 206987729 ");
+				client.sendToClient(message);
 			}
 			else if (request.startsWith("send Submitters")){
-				//add code here to send submitters names to client
+				message.setMessage("Lian, Mohamad, Shhab");
+				client.sendToClient(message);
 			}
 			else if (request.equals("what day it is?")) {
-				//add code here to send the date to client
+				LocalDate myObj = LocalDate.now();
+				message.setMessage(myObj.toString());
+				client.sendToClient(message);
 			}
 			else if (request.startsWith("add")){
+				String sum = request.substring(4);
+				String[] nums = sum.split("[+]");
+				message.setMessage((Integer.parseInt(nums[0])+ Integer.parseInt(nums[1])) + "");
+				client.sendToClient(message);
+
+
 				//add code here to sum 2 numbers received in the message and send result back to client
 				//(use substring method as shown above)
 				//message format: "add n+m"
 			}else{
+
+				sendToAllClients( message);
+
+
 				//add code here to send received message to all clients.
 				//The string we received in the message is the message we will send back to all clients subscribed.
 				//Example:
-					// message received: "Good morning"
-					// message sent: "Good morning"
+				// message received: "Good morning"
+				// message sent: "Good morning"
 				//see code for changing submitters IDs for help
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 	}
+
+
 
 	public void sendToAllClients(Message message) {
 		try {
